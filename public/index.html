@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026 媒体日历</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="muted">Media Calendar</p>
+          <h1>2026 媒体日历</h1>
+        </div>
+        <div class="month-controls">
+          <button id="prevMonth" aria-label="上个月">←</button>
+          <p id="monthLabel"></p>
+          <button id="nextMonth" aria-label="下个月">→</button>
+        </div>
+      </header>
+      <section>
+        <div class="week-header">
+          <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+        </div>
+        <div id="calendarGrid" class="calendar-grid"></div>
+      </section>
+      <footer class="tips">默认是浏览模式。点击左下角“编辑模式”后，可在日期页上传媒体和调整尺寸。</footer>
+    </main>
+
+    <button id="editModeBtn" class="edit-mode-btn" type="button">编辑模式: 关</button>
+
+    <script type="module" src="./js/edit-mode.js"></script>
+    <script type="module" src="./js/calendar.js"></script>
+  </body>
+</html>

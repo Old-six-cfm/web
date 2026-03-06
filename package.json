@@ -1,0 +1,12 @@
+{
+  "name": "web_2026",
+  "version": "1.0.0",
+  "description": "calendar media website prototype",
+  "type": "module",
+  "scripts": {
+    "start": "cd public && python3 -m http.server 8080"
+  },
+  "keywords": ["calendar", "media", "prototype"],
+  "author": "",
+  "license": "ISC"
+}

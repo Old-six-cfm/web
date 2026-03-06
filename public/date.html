@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>日期媒体浏览</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar media-head">
+        <div>
+          <p class="muted">Date Gallery</p>
+          <h1 id="dateTitle">--</h1>
+        </div>
+        <a class="back-link" href="./index.html">返回日历</a>
+      </header>
+
+      <section id="uploadPanel" class="upload-panel hidden-panel" aria-hidden="true">
+        <h2>编辑模式：上传图片或视频</h2>
+        <form id="uploadForm">
+          <input id="mediaFile" type="file" accept="image/*,video/*" required />
+          <input id="mediaCaption" type="text" maxlength="80" placeholder="备注（可选）" />
+          <button type="submit">上传到该日期</button>
+        </form>
+        <p id="storageHint" class="muted"></p>
+      </section>
+
+      <section>
+        <h2>媒体内容</h2>
+        <div id="mediaGrid" class="media-grid"></div>
+      </section>
+    </main>
+
+    <button id="editModeBtn" class="edit-mode-btn" type="button">编辑模式: 关</button>
+
+    <script type="module" src="./js/edit-mode.js"></script>
+    <script type="module" src="./js/date-view.js"></script>
+  </body>
+</html>
