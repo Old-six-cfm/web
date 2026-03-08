@@ -14,6 +14,32 @@ function encodePath(path) {
     .join("/");
 }
 
+function parseCloudError(status, text) {
+  let message = text;
+  try {
+    const parsed = JSON.parse(text);
+    if (parsed?.message) {
+      message = parsed.message;
+    }
+  } catch {
+    // Keep original text when response is not JSON.
+  }
+
+  const isRlsBlocked =
+    status === 403 && /row-level security|violates row-level security policy/i.test(text);
+
+  if (isRlsBlocked) {
+    return [
+      "Supabase 拒绝写入（RLS 策略未通过）。",
+      `请在 Supabase SQL Editor 执行项目内的 supabase/schema.sql 与 supabase/storage_policies.sql，`,
+      `并确认配置一致：bucket="${SUPABASE_CONFIG.bucket}"，table="${SUPABASE_CONFIG.table}"。`,
+      `原始错误：${message}`
+    ].join("");
+  }
+
+  return `Cloud API failed (${status}): ${message}`;
+}
+
 function toCloudHeaders(extra = {}) {
   return {
     apikey: SUPABASE_CONFIG.anonKey,
@@ -48,7 +74,7 @@ async function cloudFetch(path, options = {}) {
   const res = await fetch(`${SUPABASE_CONFIG.url}${path}`, options);
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Cloud API failed (${res.status}): ${text}`);
+    throw new Error(parseCloudError(res.status, text));
   }
   return res;
 }
@@ -115,14 +141,26 @@ export async function addMediaItem({ date, file, caption }) {
     storage_path: storagePath
   };
 
-  await cloudFetch(`/rest/v1/${SUPABASE_CONFIG.table}`, {
-    method: "POST",
-    headers: toCloudHeaders({
-      "content-type": "application/json",
-      Prefer: "return=representation"
-    }),
-    body: JSON.stringify(row)
-  });
+  try {
+    await cloudFetch(`/rest/v1/${SUPABASE_CONFIG.table}`, {
+      method: "POST",
+      headers: toCloudHeaders({
+        "content-type": "application/json",
+        Prefer: "return=representation"
+      }),
+      body: JSON.stringify(row)
+    });
+  } catch (error) {
+    try {
+      await cloudFetch(`/storage/v1/object/${SUPABASE_CONFIG.bucket}/${encodePath(storagePath)}`, {
+        method: "DELETE",
+        headers: toCloudHeaders()
+      });
+    } catch {
+      // Ignore rollback failure and preserve original insert error.
+    }
+    throw error;
+  }
 }
 
 export async function updateMediaItem(item) {
