@@ -10,6 +10,8 @@ const uploadForm = document.getElementById("uploadForm");
 const mediaFile = document.getElementById("mediaFile");
 const mediaCaption = document.getElementById("mediaCaption");
 const storageHint = document.getElementById("storageHint");
+const uploadStatus = document.getElementById("uploadStatus");
+const uploadBtn = document.getElementById("uploadBtn");
 
 dateTitle.textContent = date;
 
@@ -27,6 +29,11 @@ function syncEditUi() {
   } else {
     storageHint.textContent = "当前为本地模式：请先在 public/js/config.js 配置 Supabase 以开启多人共享。";
   }
+}
+
+function setStatus(message, isError = false) {
+  uploadStatus.textContent = message;
+  uploadStatus.style.color = isError ? "#dc2626" : "";
 }
 
 function renderItems(items) {
@@ -116,19 +123,34 @@ async function refresh() {
 
 uploadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!currentEditMode()) return;
+  if (!currentEditMode()) {
+    setStatus("请先点左下角按钮，开启编辑模式。", true);
+    return;
+  }
 
   const file = mediaFile.files?.[0];
-  if (!file) return;
+  if (!file) {
+    setStatus("请先选择一个图片或视频文件。", true);
+    return;
+  }
 
-  await addMediaItem({
-    date,
-    file,
-    caption: mediaCaption.value.trim()
-  });
+  try {
+    uploadBtn.disabled = true;
+    setStatus("上传中...");
+    await addMediaItem({
+      date,
+      file,
+      caption: mediaCaption.value.trim()
+    });
 
-  uploadForm.reset();
-  refresh();
+    uploadForm.reset();
+    setStatus("上传成功。");
+    await refresh();
+  } catch (error) {
+    setStatus(`上传失败：${error.message}`, true);
+  } finally {
+    uploadBtn.disabled = false;
+  }
 });
 
 document.addEventListener("edit-mode-changed", () => refresh());

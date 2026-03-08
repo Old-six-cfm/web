@@ -13,23 +13,27 @@ create table if not exists public.media_items (
 
 alter table public.media_items enable row level security;
 
-create policy if not exists "media_items_public_read"
-  on public.media_items
-  for select
-  using (true);
+drop policy if exists "media_items_public_read" on public.media_items;
+create policy "media_items_public_read"
+on public.media_items
+for select
+using (true);
 
-create policy if not exists "media_items_public_insert"
-  on public.media_items
-  for insert
-  with check (true);
+drop policy if exists "media_items_public_insert" on public.media_items;
+create policy "media_items_public_insert"
+on public.media_items
+for insert
+with check (true);
 
-create policy if not exists "media_items_public_update"
-  on public.media_items
-  for update
-  using (true)
-  with check (true);
+drop policy if exists "media_items_public_update" on public.media_items;
+create policy "media_items_public_update"
+on public.media_items
+for update
+using (true)
+with check (true);
 
-create policy if not exists "media_items_public_delete"
-  on public.media_items
-  for delete
-  using (true);
+drop policy if exists "media_items_public_delete" on public.media_items;
+create policy "media_items_public_delete"
+on public.media_items
+for delete
+using (true);

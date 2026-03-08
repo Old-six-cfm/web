@@ -21,9 +21,10 @@
         <form id="uploadForm">
           <input id="mediaFile" type="file" accept="image/*,video/*" required />
           <input id="mediaCaption" type="text" maxlength="80" placeholder="备注（可选）" />
-          <button type="submit">上传到该日期</button>
+          <button id="uploadBtn" type="submit">上传到该日期</button>
         </form>
         <p id="storageHint" class="muted"></p>
+        <p id="uploadStatus" class="muted"></p>
       </section>
 
       <section>
