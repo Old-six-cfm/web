@@ -1,8 +1,8 @@
 export const CLOUD_PROVIDER = "supabase";
 
 export const SUPABASE_CONFIG = {
-  url: "",
-  anonKey: "",
+  url: "https://idinzyhsrmnznsmgxezi.supabase.co",
+  anonKey: "sb_publishable_w9aMe5RIPQECAcuH-9KHPA_eQSONkUN",
   bucket: "media-files",
   table: "media_items"
 };
